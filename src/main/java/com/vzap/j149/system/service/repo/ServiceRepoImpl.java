@@ -2,6 +2,8 @@ package com.vzap.j149.system.service.repo;
 
 import com.vzap.j149.system.service.model.Service;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
