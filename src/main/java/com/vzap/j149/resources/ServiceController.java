@@ -1,7 +1,7 @@
 package com.vzap.j149.resources;
 
 import com.vzap.j149.system.service.model.Service;
-import com.vzap.j149.system.service.repo.ServiceRepo;
+import com.vzap.j149.system.service.repo.ServiceRepoImpl;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ServiceController {
 
     @EJB
-    private ServiceRepo serviceRepository;
+    private ServiceRepoImpl serviceRepository;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
