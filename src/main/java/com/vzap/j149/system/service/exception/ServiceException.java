@@ -1,13 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.vzap.j149.system.service.exception;
 
 /**
- *
- * @author JC
+ * Exception thrown when there's an error in service operations.
  */
-public class ServiceException {
-    
+public class ServiceException extends RuntimeException {
+    public ServiceException(String message) {
+        super(message);
+    }
+
+    public ServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

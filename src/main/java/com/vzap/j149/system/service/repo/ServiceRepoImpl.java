@@ -139,4 +139,9 @@ public class ServiceRepoImpl implements ServiceRepo {
             return 0;
         }
     }
+
+    @Override
+    public List<Service> findAll(int page, int size) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

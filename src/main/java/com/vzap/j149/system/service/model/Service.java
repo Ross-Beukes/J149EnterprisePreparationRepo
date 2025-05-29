@@ -54,7 +54,7 @@ public class Service implements Auditable {
     @Digits(integer = 10, fraction = 2, message = "Cost must have maximum 10 digits before and 2 after decimal")
     @Column(nullable = false, precision = 10, scale = 2)
     @JsonView(Views.Public.class)
-    private BigDecimal cost;
+    private Double cost;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @JsonView(Views.Internal.class)
