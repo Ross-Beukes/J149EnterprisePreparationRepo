@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public class MessageRepoImpl implements MessageRepo{
     private final Connection con;
-
     {
         try {
             con = DBConfig.getCon();
@@ -22,11 +21,8 @@ public class MessageRepoImpl implements MessageRepo{
 
     @Override
     public Optional<Message> createMessage(Message message) {
-
         String query = "INSERT INTO message (sender, receiver, content, time_stamp) VALUES (?, ?, ?, ?)";
-
         try (Connection con = DBConfig.getCon(); PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
             ps.setLong(1, message.getSenderId());
             ps.setLong(2, message.getReceiverId());
             ps.setString(3, message.getContent());
@@ -58,11 +54,8 @@ public class MessageRepoImpl implements MessageRepo{
 
     @Override
     public Optional<Message> updateMessage(Message message) {
-
         String query = "UPDATE message SET content = ?, time_stamp = ? WHERE messageId = ?";
-
         try (Connection con = DBConfig.getCon(); PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
             ps.setString(1, message.getContent());
             ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
             ps.setLong(3, message.getMessageId());

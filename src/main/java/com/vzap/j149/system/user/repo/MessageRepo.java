@@ -13,5 +13,4 @@ public interface MessageRepo {
     ArrayList<Message> getMessagesBySender(long senderId) throws Exception;
     ArrayList<Message> getMessagesByReceiver(long receiverId) throws Exception;
 
-
 }

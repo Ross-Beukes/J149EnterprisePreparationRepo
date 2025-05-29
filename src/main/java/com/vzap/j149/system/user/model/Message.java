@@ -1,7 +1,6 @@
 package com.vzap.j149.system.user.model;
 
 import lombok.*;
-
 import java.sql.Timestamp;
 
 @Data
