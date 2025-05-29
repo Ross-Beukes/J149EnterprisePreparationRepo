@@ -7,7 +7,9 @@ import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)  // Add this for transaction management
@@ -89,4 +91,9 @@ public class ServiceRepoImpl implements ServiceRepo {
             return false;
         }
     }
+
+//    @Override
+//    public Optional<Service> findById(Long id) {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
 }
