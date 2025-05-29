@@ -9,10 +9,18 @@ import java.sql.Timestamp;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Message {
     private long messageId;
     private long senderId;
     private long receiverId;
     private String content;
-    private Timestamp timeStamp;
+    private Timestamp timestamp;
+
+    public Message(long senderId, long receiverId, String content) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.content = content;
+    }
+
 }
