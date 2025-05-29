@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.vzap.j149.AppointmentTracker.model.DAO;
+package com.vzap.j149.AppointmentTracker.DAO;
 
 
-import com.vzap.j149.AppointmentTracker.model.entity.Appointment;
+import com.vzap.j149.AppointmentTracker.model.Appointment;
 import java.util.List;
 import java.util.Optional;
 

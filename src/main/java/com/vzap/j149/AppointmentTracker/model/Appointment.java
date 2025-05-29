@@ -1,4 +1,4 @@
-package com.vzap.j149.AppointmentTracker.model.entity;
+package com.vzap.j149.AppointmentTracker.model;
 
 import java.sql.Timestamp;
 import lombok.Builder;
