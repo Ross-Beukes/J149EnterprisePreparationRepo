@@ -3,6 +3,7 @@ package com.vzap.j149.resources;
 import com.vzap.j149.system.service.model.Service;
 import com.vzap.j149.system.service.repo.ServiceRepo;
 import jakarta.ejb.EJB;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -14,52 +15,129 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
 
-@Path("/services")
+@Path("/api/services")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ServiceController {
 
     @EJB
     private ServiceRepo serviceRepository;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Service> getAllServices() {
-        return serviceRepository.findAll();
+    public Response getAllServices() {
+        try {
+            List<Service> services = serviceRepository.findAll();
+            return Response.ok(services).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                         .entity("Error retrieving services: " + e.getMessage())
+                         .build();
+        }
     }
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getService(@PathParam("id") Long id) {
-        Service service = serviceRepository.findById(id);
-        if (service == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            if (id == null || id <= 0) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                             .entity("Invalid service ID")
+                             .build();
+            }
+
+            Optional<Service> serviceOpt = serviceRepository.findById(id);
+            return serviceOpt.map(service -> Response.ok(service).build())
+                           .orElseGet(() -> Response.status(Response.Status.NOT_FOUND)
+                                                 .entity("Service not found with id: " + id)
+                                                 .build());
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                         .entity("Error retrieving service: " + e.getMessage())
+                         .build();
         }
-        return Response.ok(service).build();
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response createService(Service service) {
-        serviceRepository.save(service);
-        return Response.status(Response.Status.CREATED).entity(service).build();
+    public Response createService(@Valid Service service) {
+        try {
+            if (service.getServiceId() != null) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                             .entity("ID must not be provided when creating a new service")
+                             .build();
+            }
+
+            Optional<Service> createdService = serviceRepository.save(service);
+            return createdService.map(s -> Response.status(Response.Status.CREATED).entity(s).build())
+                               .orElseGet(() -> Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                                                     .entity("Failed to create service")
+                                                     .build());
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                         .entity("Error creating service: " + e.getMessage())
+                         .build();
+        }
     }
 
     @PUT
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateService(@PathParam("id") Long id, Service service) {
-        service.setServiceId(id);
-        serviceRepository.update(service);
-        return Response.ok(service).build();
+    public Response updateService(@PathParam("id") Long id, @Valid Service service) {
+        try {
+            if (id == null || id <= 0 || !id.equals(service.getServiceId())) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                             .entity("Invalid or mismatched service ID")
+                             .build();
+            }
+
+            // Check if service exists
+            if (!serviceRepository.findById(id).isPresent()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                             .entity("Service not found with id: " + id)
+                             .build();
+            }
+
+            Optional<Service> updatedService = serviceRepository.update(service);
+            return updatedService.map(s -> Response.ok(s).build())
+                               .orElseGet(() -> Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                                                     .entity("Failed to update service")
+                                                     .build());
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                         .entity("Error updating service: " + e.getMessage())
+                         .build();
+        }
     }
 
     @DELETE
     @Path("/{id}")
     public Response deleteService(@PathParam("id") Long id) {
-        serviceRepository.delete(id);
-        return Response.status(Response.Status.NO_CONTENT).build();
+        try {
+            if (id == null || id <= 0) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                             .entity("Invalid service ID")
+                             .build();
+            }
+
+            // Check if service exists
+            if (!serviceRepository.findById(id).isPresent()) {
+                return Response.status(Response.Status.NOT_FOUND)
+                             .entity("Service not found with id: " + id)
+                             .build();
+            }
+
+            boolean deleted = serviceRepository.delete(id);
+            if (deleted) {
+                return Response.noContent().build();
+            } else {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                             .entity("Failed to delete service")
+                             .build();
+            }
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                         .entity("Error deleting service: " + e.getMessage())
+                         .build();
+        }
     }
 }
