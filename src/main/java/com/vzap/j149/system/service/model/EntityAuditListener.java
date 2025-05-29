@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 /**
  * JPA Entity Listener for automatically maintaining audit information.
- * Handles setting creation/update timestamps.
+ * Handles setting creation/update timestamps and soft-delete functionality.
  */
 public class EntityAuditListener {
 
@@ -23,6 +23,8 @@ public class EntityAuditListener {
                 auditable.setCreatedAt(now);
             }
             auditable.setUpdatedAt(now);
+            // Initialize deleted flag if not set
+            auditable.setDeleted(false);
         }
     }
 
@@ -44,9 +46,10 @@ public class EntityAuditListener {
     @PreRemove
     public void onPreRemove(Object target) {
         if (target instanceof Auditable auditable) {
-             if (auditable.isDeleted()) {
-                 auditable.setUpdatedAt(LocalDateTime.now());
-             }
+            auditable.setDeleted(true);
+            auditable.setUpdatedAt(LocalDateTime.now());
+            // Prevent actual deletion - this requires additional configuration in your JPA provider
+            // to handle soft deletes properly
         }
     }
 }

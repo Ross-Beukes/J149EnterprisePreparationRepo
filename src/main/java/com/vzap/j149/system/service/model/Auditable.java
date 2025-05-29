@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 
 /**
  * Interface that defines auditing properties for JPA entities.
- * Implementing this interface allows entities to track creation and update timestamps.
+ * Implementing this interface allows entities to track creation and update timestamps,
+ * as well as soft-delete functionality.
  */
 public interface Auditable {
 
@@ -16,7 +17,7 @@ public interface Auditable {
 
     /**
      * Sets the timestamp when the entity was created.
-     * Typically called automatically by JPA lifecycle hooks.
+     * Typically called automatically by JPA life-cycle hooks.
      * @param createdAt the creation timestamp
      */
     void setCreatedAt(LocalDateTime createdAt);
@@ -29,7 +30,7 @@ public interface Auditable {
 
     /**
      * Sets the timestamp when the entity was last updated.
-     * Typically called automatically by JPA lifecycle hooks.
+     * Typically called automatically by JPA life-cycle hooks.
      * @param updatedAt the last update timestamp
      */
     void setUpdatedAt(LocalDateTime updatedAt);
@@ -67,31 +68,14 @@ public interface Auditable {
     }
 
     /**
-     * Checks if the entity is new (has not been persisted yet).
-     * @return true if the entity is new, false otherwise
+     * Checks if the entity has been soft-deleted.
+     * @return true if the entity is marked as deleted, false otherwise
      */
-    default boolean isNew() {
-        return getCreatedAt() == null;
-    }
+    boolean isDeleted();
 
     /**
-     * Updates the audit fields with the current timestamp.
-     * Should be called before persisting or updating the entity.
-     * @param currentUser the ID of the current user, can be null
-     * @return the current timestamp that was set
+     * Sets the deleted status of the entity.
+     * @param deleted true to mark as deleted, false otherwise
      */
-    default LocalDateTime touch(String currentUser) {
-        LocalDateTime now = LocalDateTime.now();
-        if (isNew()) {
-            setCreatedAt(now);
-            if (currentUser != null) {
-                setCreatedBy(currentUser);
-            }
-        }
-        setUpdatedAt(now);
-        if (currentUser != null) {
-            setLastModifiedBy(currentUser);
-        }
-        return now;
-    }
+    void setDeleted(boolean deleted);
 }
